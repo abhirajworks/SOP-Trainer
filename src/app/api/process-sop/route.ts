@@ -64,12 +64,6 @@ STEP 4: Generate assessment
 - 1 sequence question
 - Each question must include explanation
 
-ANTI-HALLUCINATION RULES (CRITICAL):
-- DO NOT fabricate, invent, or guess any information.
-- ALL generated content MUST be strictly extracted from the provided SOP text.
-- If the SOP text does not contain enough information for a specific required field, use the EXACT phrase: "Information not provided in SOP".
-- Do not add hypothetical policies, metrics, roles, or facts not explicitly mentioned in the text.
-
 You MUST respond with valid JSON only. No markdown, no code fences, no extra text. Use this exact structure:
 
 {
@@ -168,13 +162,12 @@ GOOD: "Approve with partial refund as product is opened but within return window
 - Avoid generic examples
 
 ---
-STRICT RULES & ANTI-HALLUCINATION:
+STRICT RULES:
 - DO NOT change JSON structure
-- DO NOT add new fields or remove fields
+- DO NOT add new fields
+- DO NOT remove fields
 - DO NOT rename fields
 - ONLY improve wording and clarity
-- DO NOT fabricate, invent, or hallucinate new facts, metrics, or company policies.
-- Example real-world contexts must be logical general business consequences (e.g., "delayed processing affecting customer satisfaction"), DO NOT invent specific company names, numeric SLAs, or strict policy rules that weren't in the input.
 - Keep output concise but sharp
 - Return VALID JSON only (no text outside JSON)
 
@@ -238,9 +231,16 @@ export async function POST(request: NextRequest) {
     const rawContent = await callGroqWithFallback({
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: `Analyze this SOP document and convert it into training modules:\n\n${sopText}` },
+        { 
+          role: "user", 
+          content: `Analyze this SOP document and convert it into training modules. 
+CRITICAL: ALL content must be extracted EXACTLY from the text below. DO NOT invent, guess, or hallucinate any modules, steps, or consequences.
+
+SOP TEXT:
+${sopText}` 
+        },
       ],
-      temperature: 0.3,
+      temperature: 0.1,
       max_tokens: 4000,
       response_format: { type: "json_object" },
     });
@@ -260,7 +260,7 @@ export async function POST(request: NextRequest) {
         { role: "system", content: REVIEWER_SYSTEM_PROMPT },
         { role: "user", content: buildReviewerUserMessage(rawContent) },
       ],
-      temperature: 0.4,
+      temperature: 0.1,
       max_tokens: 4000,
       response_format: { type: "json_object" },
     }).catch(() => null);

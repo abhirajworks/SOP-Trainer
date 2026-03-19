@@ -94,16 +94,15 @@ function LandingSection({
           />
 
           <div className="flex items-center gap-3">
-            <label className="flex-1 relative cursor-pointer">
+            <label className="flex-1 cursor-pointer">
               <input
                 type="file"
-                accept=".txt,text/plain,.pdf,application/pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.doc,application/msword"
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                accept=".txt,.pdf,.docx,.doc"
+                className="hidden"
                 onChange={handleFileUpload}
-                title="Upload file"
               />
               <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-dashed border-zinc-700 hover:border-zinc-500 text-xs text-zinc-400 hover:text-zinc-300 transition-colors">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" /></svg>
                 {fileName ? fileName : "Upload file"}
               </div>
             </label>
@@ -160,7 +159,7 @@ function ErrorState({ message, onRetry }: { message: string; onRetry: () => void
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="rounded-xl border border-red-500/20 bg-zinc-900/60 max-w-md w-full p-8 text-center space-y-4">
         <div className="w-12 h-12 mx-auto rounded-full border border-red-500/30 flex items-center justify-center">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-400"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-400"><circle cx="12" cy="12" r="10" /><line x1="15" y1="9" x2="9" y2="15" /><line x1="9" y1="9" x2="15" y2="15" /></svg>
         </div>
         <div>
           <h3 className="text-base font-medium text-zinc-100">Something went wrong</h3>
@@ -294,7 +293,7 @@ function ResultsSection({ data, onReset, onUpdateData }: { data: SOPResult; onRe
               variant="outline"
               className="border-zinc-700 hover:bg-zinc-800 text-zinc-300 text-sm gap-2"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /><polyline points="10 9 9 9 8 9" /></svg>
               {exportingPdf ? "Exporting..." : "Export PDF"}
             </Button>
             <Button
@@ -303,7 +302,7 @@ function ResultsSection({ data, onReset, onUpdateData }: { data: SOPResult; onRe
               variant="outline"
               className="border-zinc-700 hover:bg-zinc-800 text-zinc-300 text-sm gap-2"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" /></svg>
               {exporting ? "Exporting..." : "Export Slides"}
             </Button>
             <Button onClick={onReset} variant="outline" className="border-zinc-700 hover:bg-zinc-800 text-zinc-300 text-sm">
@@ -397,7 +396,7 @@ function ResultsSection({ data, onReset, onUpdateData }: { data: SOPResult; onRe
                 variant="outline"
                 className="border-zinc-700 hover:bg-zinc-800 text-zinc-300 text-sm gap-2"
               >
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 4 23 10 17 10" /><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" /></svg>
                 {regeneratingQuiz ? "Regenerating..." : "Regenerate Quiz"}
               </Button>
             </div>
@@ -455,8 +454,8 @@ function ResultsSection({ data, onReset, onUpdateData }: { data: SOPResult; onRe
 function DetailRow({ label, value, variant }: { label: string; value: string; variant?: string }) {
   const borderColor =
     variant === "warn" ? "border-amber-500/10 bg-amber-500/5" :
-    variant === "info" ? "border-sky-500/10 bg-sky-500/5" :
-    "border-zinc-800 bg-zinc-950/30";
+      variant === "info" ? "border-sky-500/10 bg-sky-500/5" :
+        "border-zinc-800 bg-zinc-950/30";
   return (
     <div className={`p-3 rounded-lg border ${borderColor}`}>
       <p className="text-[11px] font-medium text-zinc-500 mb-1 uppercase tracking-wide">{label}</p>
