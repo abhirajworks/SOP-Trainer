@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import mammoth from "mammoth";
+import pdfParse from "pdf-parse";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
@@ -25,9 +26,6 @@ export async function POST(request: NextRequest) {
     let text = "";
 
     if (name.endsWith(".pdf")) {
-      // Use eval('require') to bypass Webpack parsing pdf-parse which causes 'window is not defined'
-      const req = eval('require');
-      const pdfParse = req("pdf-parse");
       const result = await pdfParse(buffer);
       text = result.text;
     } else if (name.endsWith(".docx") || name.endsWith(".doc")) {
