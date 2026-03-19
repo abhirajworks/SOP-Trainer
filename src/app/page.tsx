@@ -274,10 +274,10 @@ function ResultsSection({ data, onReset, onUpdateData }: { data: SOPResult; onRe
   };
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen p-4 sm:p-6">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
           <div>
             <h1 className="text-xl font-semibold text-zinc-100">Training Results</h1>
             <div className="flex items-center gap-2 mt-2">
@@ -286,7 +286,7 @@ function ResultsSection({ data, onReset, onUpdateData }: { data: SOPResult; onRe
               {getBadge(data.analysis.complexity)}
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 overflow-x-auto">
             <Button
               onClick={handleExportPdf}
               disabled={exportingPdf}
