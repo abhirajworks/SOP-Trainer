@@ -14,9 +14,18 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "SOP Trainer — AI-Powered Training Module Generator",
-  description:
-    "Transform Standard Operating Procedures into interactive, structured training modules with AI. Upload your SOP and get learning objectives, decision scenarios, and quizzes instantly.",
+  title: "SOP Trainer",
+  description: "AI-Powered Training Module Generator",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "SOP Trainer",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  themeColor: "#09090b",
 };
 
 export default function RootLayout({

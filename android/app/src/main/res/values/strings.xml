@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SOPTrainer</string>
+    <string name="title_activity_main">SOPTrainer</string>
+    <string name="package_name">com.sop.trainer</string>
+    <string name="custom_url_scheme">com.sop.trainer</string>
+</resources>

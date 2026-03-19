@@ -26,7 +26,25 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
+.env*
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# test scripts
+test-upload.js
+test-upload2.js
+dummy.pdf
+dummy2.pdf
+debug.log
+*.md
+!README.md
+!prd.md
+!walkthrough.md
+!task.md
+!src/app/api/generate-slides/template.md
 
 # vercel
 .vercel
