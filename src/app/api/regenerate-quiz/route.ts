@@ -2,6 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { callGroqWithFallback } from "@/lib/groq";
 import type { TrainingModule, QuizQuestion } from "@/types/sop";
 
+// In-memory rate limiter: max 10 requests per minute per IP
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_MAX = 10;
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return true;
+  }
+  if (entry.count >= RATE_LIMIT_MAX) return false;
+  entry.count++;
+  return true;
+}
+
 const SYSTEM_PROMPT = `You are a training assessment generator. Return VALID JSON only — no markdown, no code fences, no extra text.`;
 
 function buildUserMessage(modules: TrainingModule[], previousQuiz: QuizQuestion[]): string {
@@ -37,6 +54,19 @@ ${JSON.stringify(modules)}`;
 }
 
 export async function POST(request: NextRequest) {
+  // Rate limiting
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+    request.headers.get("x-real-ip") ??
+    "unknown";
+
+  if (!checkRateLimit(ip)) {
+    return NextResponse.json(
+      { error: "Too many requests. Please wait a minute and try again." },
+      { status: 429 }
+    );
+  }
+
   try {
     const { training_modules, previous_quiz } = await request.json();
 
@@ -85,6 +115,7 @@ export async function POST(request: NextRequest) {
     }
 
     const message = error instanceof Error ? error.message : "An unexpected error occurred.";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("Quiz detail:", message);
+    return NextResponse.json({ error: "Something went wrong. Please try again." }, { status: 500 });
   }
 }

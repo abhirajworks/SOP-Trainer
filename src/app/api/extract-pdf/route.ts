@@ -26,9 +26,17 @@ export async function POST(request: NextRequest) {
     let text = "";
 
     if (name.endsWith(".pdf")) {
+      // Validate PDF magic bytes: must start with %PDF
+      if (buffer.length < 4 || buffer.toString("ascii", 0, 4) !== "%PDF") {
+        return NextResponse.json({ error: "Invalid file format. The file does not appear to be a valid PDF." }, { status: 400 });
+      }
       const result = await pdfParse(buffer);
       text = result.text;
     } else if (name.endsWith(".docx") || name.endsWith(".doc")) {
+      // Validate DOCX/ZIP magic bytes: must start with PK (0x50 0x4B)
+      if (buffer.length < 2 || buffer[0] !== 0x50 || buffer[1] !== 0x4B) {
+        return NextResponse.json({ error: "Invalid file format. The file does not appear to be a valid DOCX document." }, { status: 400 });
+      }
       const result = await mammoth.extractRawText({ buffer });
       text = result.value;
     } else {
@@ -48,7 +56,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("File extraction error:", error);
     return NextResponse.json(
-      { error: "Failed to extract text: " + String(error) },
+      { error: "Something went wrong. Please try again." },
       { status: 500 }
     );
   }
