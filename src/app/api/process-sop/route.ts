@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import Groq from "groq-sdk";
-
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
+import { callGroqWithFallback, getCacheKey, getCachedResult, setCachedResult } from "@/lib/groq";
 
 // In-memory rate limiter: max 10 requests per minute per IP
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -223,25 +219,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Call 1: Generate raw training content
-    const call1 = await groq.chat.completions.create({
+    // Check cache first
+    const cacheKey = getCacheKey(sopText);
+    const cached = getCachedResult(cacheKey);
+    if (cached) {
+      console.log("[Cache] Returning cached SOP result");
+      return NextResponse.json(cached);
+    }
+
+    // Call 1: Generate raw training content (with model fallback)
+    const rawContent = await callGroqWithFallback({
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: `Analyze this SOP document and convert it into training modules:\n\n${sopText}` },
       ],
-      model: "llama-3.3-70b-versatile",
       temperature: 0.3,
       max_tokens: 4000,
       response_format: { type: "json_object" },
     });
-
-    const rawContent = call1.choices[0]?.message?.content;
-    if (!rawContent) {
-      return NextResponse.json(
-        { error: "No response received from AI model." },
-        { status: 500 }
-      );
-    }
 
     const rawParsed = JSON.parse(rawContent);
 
@@ -252,21 +247,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Call 2: Refine and improve content quality
-    const call2 = await groq.chat.completions.create({
+    // Call 2: Refine and improve content quality (with model fallback)
+    const refinedContent = await callGroqWithFallback({
       messages: [
         { role: "system", content: REVIEWER_SYSTEM_PROMPT },
         { role: "user", content: buildReviewerUserMessage(rawContent) },
       ],
-      model: "llama-3.3-70b-versatile",
       temperature: 0.4,
       max_tokens: 4000,
       response_format: { type: "json_object" },
-    });
+    }).catch(() => null);
 
-    const refinedContent = call2.choices[0]?.message?.content;
     if (!refinedContent) {
       // Fall back to raw output if reviewer fails
+      setCachedResult(cacheKey, rawParsed);
       return NextResponse.json(rawParsed);
     }
 
@@ -274,9 +268,11 @@ export async function POST(request: NextRequest) {
 
     // Ensure structure integrity — fall back to raw if reviewer broke it
     if (!refined.analysis || !refined.overview || !refined.training_modules) {
+      setCachedResult(cacheKey, rawParsed);
       return NextResponse.json(rawParsed);
     }
 
+    setCachedResult(cacheKey, refined);
     return NextResponse.json(refined);
   } catch (error: unknown) {
     console.error("SOP Processing Error:", error);

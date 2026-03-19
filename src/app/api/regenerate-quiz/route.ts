@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import Groq from "groq-sdk";
+import { callGroqWithFallback } from "@/lib/groq";
 import type { TrainingModule, QuizQuestion } from "@/types/sop";
-
-const groq = new Groq({
-  apiKey: process.env.GROQ_API_KEY,
-});
 
 const SYSTEM_PROMPT = `You are a training assessment generator. Return VALID JSON only — no markdown, no code fences, no extra text.`;
 
@@ -58,24 +54,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const completion = await groq.chat.completions.create({
+    const content = await callGroqWithFallback({
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: buildUserMessage(training_modules, previous_quiz || []) },
       ],
-      model: "llama-3.3-70b-versatile",
       temperature: 0.6,
       max_tokens: 2000,
       response_format: { type: "json_object" },
     });
-
-    const content = completion.choices[0]?.message?.content;
-    if (!content) {
-      return NextResponse.json(
-        { error: "No response received from AI model." },
-        { status: 500 }
-      );
-    }
 
     const parsed = JSON.parse(content);
 
