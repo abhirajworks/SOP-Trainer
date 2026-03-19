@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SOP Trainer 🚀
+
+An AI-powered application that transforms Standard Operating Procedures (SOPs) into interactive, structured training modules.
+
+## Features
+- **Redesigned UI**: Minimalist, dark aesthetic inspired by modern SaaS designs.
+- **Smart Analysis**: Powered by Groq (LLaMA 3.3 70B) for instant SOP extraction.
+- **Interactive Quiz**: Real-time evaluation of employees.
+- **Decision Scenarios**: Practical situational training based on SOP rules.
+- **Multiple Exports**:
+  - **SlideDev Markdown**: Export as a ready-to-run presentation.
+  - **PDF Manual**: High-contrast PDF reports for printing.
+- **Mobile Friendly**: Built as a PWA, ready for mobile installation.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 18+
+- Groq Cloud API Key
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Installation
+1. Clone the repository.
+2. `npm install`
+3. Create a `.env.local` file:
+   ```env
+   GROQ_API_KEY=gsk_your_key_here
+   ```
+4. `npm run dev`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deployment (Vercel)
+When deploying to Vercel, navigate to **Settings > Environment Variables** and add:
+- `GROQ_API_KEY`: Your actual Groq key.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech Stack
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Tailwind CSS / shadcn/ui
+- **PDF Core**: pdfkit
+- **Presentation**: SlideDev
+- **AI Backend**: Groq SDK (LLaMA 3.3)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Created with focus on privacy and security. No API keys are included in this codebase.*
