@@ -94,12 +94,13 @@ function LandingSection({
           />
 
           <div className="flex items-center gap-3">
-            <label className="flex-1 cursor-pointer">
+            <label className="flex-1 relative cursor-pointer">
               <input
                 type="file"
-                accept=".txt,.pdf,.docx,.doc"
-                className="hidden"
+                accept=".txt,text/plain,.pdf,application/pdf,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.doc,application/msword"
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                 onChange={handleFileUpload}
+                title="Upload file"
               />
               <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-dashed border-zinc-700 hover:border-zinc-500 text-xs text-zinc-400 hover:text-zinc-300 transition-colors">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
