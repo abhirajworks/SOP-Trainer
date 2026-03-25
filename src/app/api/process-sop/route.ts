@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { callGroqWithFallback, getCacheKey, getCachedResult, setCachedResult } from "@/lib/groq";
+import { sanitizeForLLM } from "@/lib/sanitize";
 
 // In-memory rate limiter: max 10 requests per minute per IP
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -214,13 +215,16 @@ export async function POST(request: NextRequest) {
 
     if (!process.env.GROQ_API_KEY) {
       return NextResponse.json(
-        { error: "GROQ_API_KEY is not configured on the server." },
+        { error: "AI service is not configured. Please contact the administrator." },
         { status: 500 }
       );
     }
 
+    // Sanitize input to mitigate prompt injection
+    const cleanedText = sanitizeForLLM(sopText);
+
     // Check cache first
-    const cacheKey = getCacheKey(sopText);
+    const cacheKey = getCacheKey(cleanedText);
     const cached = getCachedResult(cacheKey);
     if (cached) {
       console.log("[Cache] Returning cached SOP result");
@@ -231,13 +235,13 @@ export async function POST(request: NextRequest) {
     const rawContent = await callGroqWithFallback({
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
-        { 
-          role: "user", 
-          content: `Analyze this SOP document and convert it into training modules. 
+        {
+          role: "user",
+          content: `Analyze this SOP document and convert it into training modules.
 CRITICAL: ALL content must be extracted EXACTLY from the text below. DO NOT invent, guess, or hallucinate any modules, steps, or consequences.
 
 SOP TEXT:
-${sopText}` 
+${cleanedText}`
         },
       ],
       temperature: 0.1,

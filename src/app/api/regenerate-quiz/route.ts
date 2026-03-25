@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
 
     if (!process.env.GROQ_API_KEY) {
       return NextResponse.json(
-        { error: "GROQ_API_KEY is not configured on the server." },
+        { error: "AI service is not configured. Please contact the administrator." },
         { status: 500 }
       );
     }
